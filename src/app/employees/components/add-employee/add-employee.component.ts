@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EmpoyeesService } from '../../services/empoyees.service';
+import { EmployeesService } from '../../services/employees.service';
 
 @Component({
   selector: 'app-add-employee',
@@ -12,26 +12,39 @@ export class AddEmployeeComponent implements OnInit {
 
   isSaved = false;
 
-  addEmployeeForm = new FormGroup({
-    name: new FormControl('',Validators.required),
-    phone: new FormControl('',[Validators.required,Validators.minLength(10)]),
-    email: new FormControl('',[Validators.required,Validators.email])
+  // Step 1:
+  // Let's have form tag equivalent in TS
+  addContactForm = new FormGroup({
+    // Step 2: Let's have form element equivalents
+    name: new FormControl('arun', Validators.required), // Step 5: Working on validations
+    phone: new FormControl('34234', Validators.required),
+    email: new FormControl('a@b.com', [Validators.required, Validators.email])
   });
 
-  constructor(private employeeService: EmpoyeesService) { }
+
+  constructor(private employeesService: EmployeesService) { // 1. connect with the service using Dep inj
+
+  }
 
   ngOnInit(): void {
   }
 
-  handleAddEmployeeSubmit(): void{
+  handleAddContactSubmit(): void {
+    // get the form data
+    console.log(this.addContactForm); // this will give you the whole form state
 
-    console.log(this.addEmployeeForm.value);
-    this.employeeService.createEmployee(this.addEmployeeForm.value)
-    .subscribe((res: any) => {
-       if(res && res.id){
-         this.isSaved = true;
-       }
-    });
+    console.log(this.addContactForm.value); // form data will be as obj
+
+
+    // 2. send the form data to the service
+    this.employeesService.createEmployee(this.addContactForm.value)
+      .subscribe((res: any) => { // 3. get the res from the service
+        console.log(res);
+        if (res && res.id) {
+          this.isSaved = true;
+        }
+      });
+
   }
 
 }
